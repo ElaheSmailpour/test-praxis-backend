@@ -8,9 +8,6 @@ const imagesSchema = new Schema(
        title:String
     
     }
-
-
-
 );
 
 module.exports = mongoose.model("imagesHome", imagesSchema);
