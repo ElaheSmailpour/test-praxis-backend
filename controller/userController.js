@@ -23,7 +23,7 @@ exports.login = async (req, res, next) => {
 
     try {
 
-        let useremail = await User.findOne({ email: loginuser.email })
+        let useremail = await user.findOne({ email: loginuser.email })
         console.log(useremail);
 
         if (useremail === null) {
