@@ -6,7 +6,7 @@ const cors = require("./middleware/cors")
 const app = express();
 
 const verbindeDB = require("./mongo-db");
-
+const terminRouter = require('./routes/TerminRouter');
 const imagesRouter = require('./routes/ImagesRouter');
 const userLoginRouter=require("./routes/userLoginRouters")
 verbindeDB()
@@ -21,6 +21,7 @@ app.use(cors)
 
 app.use(express.static('public'))
 app.use("/register",userLoginRouter)
+app.use("/termin", terminRouter)
 app.use("/imagesHome", imagesRouter)
 app.get('*', (req, res, next) => {
     res.status(404).send("Diesen Pfad gibt es nicht")
