@@ -18,44 +18,32 @@ exports.signup = async (req, res, next) => {
         res.status(500).send('Something went wrong!')
     }
 }
-exports.login = async (req, res, next) => {
-    let loginuser = req.body
-
-    try {
-
-        let useremail = await user.findOne({ email: loginuser.email })
-        console.log(useremail);
-
-        if (useremail === null) {
-            return res.status(401).send('incorrect email')
-        }
-
-        let comparePasswort = await bcrypt.compare(loginuser.password, useremail.password)
-
-        if (comparePasswort) {
-
-            let token = jwt.sign({
-                email: useremail.email,
-                userId: useremail._id,
-            }, process.env.JWT || 'secret', { expiresIn: '2h' })
-            res.status(200).json({
-                message: 'You are log it',
-                token: token,
-                name: useremail.name
-
-
-            })
-
-        }
-        else {
-            res.status(401).send('You are  not log it')
-        }
-    }
-    catch (error) {
-        res.status(401).send('Du konntest nicht eingeloggt werden')
-    }
+exports.userLogin = async (req, res, next) => {
+	let loginuser = req.body
+	try {
+		let userfind = await user.findOne({ email: loginuser.email })
+		console.log(userfind);
+		if (userfind === null) {
+			return res.status(401).send('No user')
+		}
+		let comparePasswort = await bcrypt.compare(loginuser.password, userfind.password)
+		if (comparePasswort) {
+			let token = jwt.sign({
+				email: userfind.email,
+				_id: userfind._id,
+			}, process.env.JWT,{expiresIn:"2h"})
+			res.status(200).json({
+				message: 'You are log it',
+				token: token,
+				email: userfind.email
+			})
+		} else {
+			res.status(401).send('You are  not log it')
+		}
+	} catch (error) {
+		res.status(401).send('Du konntest nicht eingeloggt werden')
+	}
 }
-
 
 
 
