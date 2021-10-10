@@ -1,5 +1,5 @@
 const user = require("../models/userModel")
-
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 exports.signup = async (req, res, next) => {
 	try {
@@ -36,18 +36,20 @@ exports.userLogin = async (req, res, next) => {
 
 			let token = jwt.sign({
 				email: useremail.email,
-				userId: useremail._id,
+			 	userId: useremail._id,
 			}, process.env.JWT || 'secret', { expiresIn: '2h' })
-			console.log("token=", token)
+			 console.log("token=", token)
 			res.status(200).json({
 				message: 'You are log it',
 				token: token,
-				email: useremail.email
+				email: useremail.email,
+				name:useremail.name
 
 
 			})
 
-		} else {
+		}
+		 else {
 			res.status(401).send('You are  not log it')
 		}
 	} catch (error) {
