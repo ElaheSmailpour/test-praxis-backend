@@ -27,8 +27,11 @@ exports.getTermin = async (req, res, next) => {
 
     terminsData.forEach(item => {
         const foundeddate = avalableTime.find(dateItem => dateItem.date === item.date)
+        if (foundeddate) {
         const foundedHourIndex = foundeddate.hours.findIndex(hour => hour === item.time)
+        
         foundeddate.hours.splice(foundedHourIndex, 1)
+        }
     })
     res.send(avalableTime)
 }
