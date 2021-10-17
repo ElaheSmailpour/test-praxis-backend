@@ -17,7 +17,7 @@ exports.getTermin = async (req, res, next) => {
     const avalableTime = []
     for (let i = 0; i < 5; i++) {
         const date = {
-            date: moment().add("days", i).format("YYYY-MM_DD"),
+            date: moment().add("days", i).format("YYYY-MM-DD"),
             hours: [10, 11, 12, 13, 14, 15, 16]
         }
         avalableTime.push(date)
