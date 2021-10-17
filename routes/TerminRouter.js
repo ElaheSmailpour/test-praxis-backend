@@ -3,9 +3,10 @@ const express = require('express')
 
 const router = express.Router()
 
-const {getBehandlungen } = require("../controller/terminController")
+const {getBehandlungen,getTermin } = require("../controller/terminController")
 
   
+router.route("/getTermin").get(getTermin)
 router.route("/behandlungen").get(getBehandlungen)
 
 
