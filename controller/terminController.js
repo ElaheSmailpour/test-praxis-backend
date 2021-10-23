@@ -1,7 +1,7 @@
 var cache = require('js-cache');
 const moment = require('moment');
 const behandlung = require('../models/behandlungenModel');
-
+const user = require('../models/userModel');
 const termin = require('../models/terminModel');
 
 
@@ -15,27 +15,36 @@ exports.getBehandlungen = (req, res, next) => {
 //getTerminBestätigung
 exports.getTerminBestätigung = (req, res, next) => {
     const phone = req.params.phone;
-	const code = Math.floor(Math.random() * 10000);
-	console.log("code=", code)
-	cache.set(phone, code)
-	res.send(200)
-  
+    const code = Math.floor(Math.random() * 10000);
+    console.log("code=", code)
+    cache.set(phone, code)
+    res.send(200)
+
 }
 //buchen
-exports.buchen = (req, res, next) => {
+exports.buchen = async (req, res, next) => {
     const phone = req.params.phone;
     const code = req.params.code;
-	const exitCode = cache.get(phone)
-	console.log("exitCode=", exitCode)
-if (code==exitCode){
-	res.send(200)
-}
-else{
-    res.send(401)
-}
+    const exitCode = cache.get(phone)
+    console.log("exitCode=", exitCode)
+    if (code == exitCode) {
+        let userFind = await user.find({ phone: phone })
+        if (!userFind) {
+           userFind=await user.create({ name: req.body.name, phone })
+        }
+        const createTermin=await termin.create({
+             time: req.body.time, 
+             date:req.body.date,
+             userId:userFind._id
+             })
+        res.send(createTermin)
+    }
+    else {
+        res.send(401)
+    }
 
-  
-  
+
+
 }
 //getTermin
 exports.getTermin = async (req, res, next) => {
@@ -51,9 +60,9 @@ exports.getTermin = async (req, res, next) => {
     terminsData.forEach(item => {
         const foundeddate = avalableTime.find(dateItem => dateItem.date === item.date)
         if (foundeddate) {
-        const foundedHourIndex = foundeddate.hours.findIndex(hour => hour === item.time)
-        
-        foundeddate.hours.splice(foundedHourIndex, 1)
+            const foundedHourIndex = foundeddate.hours.findIndex(hour => hour === item.time)
+
+            foundeddate.hours.splice(foundedHourIndex, 1)
         }
     })
     res.send(avalableTime)
