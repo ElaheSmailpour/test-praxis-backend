@@ -1,3 +1,4 @@
+var cache = require('js-cache');
 const moment = require('moment');
 const behandlung = require('../models/behandlungenModel');
 
@@ -13,11 +14,27 @@ exports.getBehandlungen = (req, res, next) => {
 }
 //getTerminBestätigung
 exports.getTerminBestätigung = (req, res, next) => {
-    const phone=req.params.phone;
-   const code= Math.floor(Math.random()*1000);
-   console.log("code=",code)
+    const phone = req.params.phone;
+	const code = Math.floor(Math.random() * 10000);
+	console.log("code=", code)
+	cache.set(phone, code)
+	res.send(200)
   
-        res.status(200)
+}
+//buchen
+exports.buchen = (req, res, next) => {
+    const phone = req.params.phone;
+    const code = req.params.code;
+	const exitCode = cache.get(phone)
+	console.log("exitCode=", exitCode)
+if (code==exitCode){
+	res.send(200)
+}
+else{
+    res.send(401)
+}
+
+  
   
 }
 //getTermin
