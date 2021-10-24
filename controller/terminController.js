@@ -23,28 +23,28 @@ exports.getTerminBestätigung = (req, res, next) => {
 }
 //buchen
 exports.buchen = async (req, res, next) => {
-    const phone = req.params.phone;
-    const code = req.params.code;
-    const exitCode = cache.get(phone)
-    console.log("exitCode=", exitCode)
-    if (code == exitCode) {
-        let userFind = await user.find({ phone: phone })
-        if (!userFind) {
-           userFind=await user.create({ name: req.body.name, phone })
-        }
-        const createTermin=await termin.create({
-             time: req.body.time, 
-             date:req.body.date,
-             userId:userFind._id
-             })
-        res.send(createTermin)
-    }
-    else {
-        res.send(401)
-    }
+	const phone = req.params.phone;
+	const code = req.params.code;
+	const existCode = cache.get(phone);
+	console.log("existCode=",existCode);
+	if (code == existCode) {
+		let userfind = await user.findOne({ phone: phone })
+		console.log("userfind=", userfind)
+		if (!userfind) {
+			userfind = await user.create({ name: req.body.name, phone })
 
+		}
+		const createTermin = await termin.create({
+			time: req.body.time,
+			date: req.body.date,
+		
+			userId: userfind._id
+		})
+		res.send(createTermin)
 
-
+	}
+	else
+		res.send(401)
 }
 //getTermin
 exports.getTermin = async (req, res, next) => {
