@@ -31,13 +31,14 @@ exports.terminRemove = async (req, res, next) => {
 //getTerminList
 exports.getTerminList = async (req, res, next) => {
     const phone = req.params.phone;
-    const finduser = await user.findOne({ phone: phone })
-    if (!finduser) {
-        return res.status(400).send(" Sie haben für diese telefonnummer keinen termin gebucht!")
-    }
-    const terminlist = await termin.find({ userId: finduser._id })
-    res.send(terminlist)
+	const findUser = await user.findOne({ phone: phone })
 
+	if (!findUser) {
+		return res.status(400).send("für diese telefonNummer gibt es keinen Termin!")
+	}
+
+	const terminList = await termin.find({ userId: findUser._id }).populate("userId")
+	res.send(terminList)
 }
 //buchen
 exports.buchen = async (req, res, next) => {
