@@ -21,10 +21,21 @@ exports.getTerminBestätigung = (req, res, next) => {
     res.send(200)
 
 }
+//terminCancel
+
+exports.terminRemove = async (req, res, next) => {
+    const terminid = req.params.terminId;
+    const removetermin = await termin.findByIdAndRemove(terminid)
+    res.send(200)
+}
 //getTerminList
 exports.getTerminList = async (req, res, next) => {
     const phone = req.params.phone;
-    const terminlist = await termin.find({ phone })
+    const finduser = await user.findOne({ phone: phone })
+    if (!finduser) {
+        return res.status(400).send(" Sie haben für diese telefonnummer keinen termin gebucht!")
+    }
+    const terminlist = await termin.find({ userId: finduser._id })
     res.send(terminlist)
 
 }
