@@ -12,15 +12,7 @@ exports.getBehandlungen = (req, res, next) => {
         res.status(500).send("Fehler : " + fehler)
     })
 }
-//getTerminBestätigung
-exports.getTerminBestätigung = (req, res, next) => {
-    const phone = req.params.phone;
-    const code = Math.floor(Math.random() * 10000);
-    console.log("code=", code)
-    cache.set(phone, code)
-    res.send(200)
 
-}
 //terminCancel
 
 exports.terminRemove = async (req, res, next) => {
@@ -39,6 +31,15 @@ exports.getTerminList = async (req, res, next) => {
 
 	const terminList = await termin.find({ userId: findUser._id }).populate("userId")
 	res.send(terminList)
+}
+//getTerminBestätigung
+exports.getTerminBestätigung = (req, res, next) => {
+    const phone = req.params.phone;
+    const code = Math.floor(Math.random() * 10000);
+    console.log("code=", code)
+    cache.set(phone, code)
+    res.send(200)
+
 }
 //buchen
 exports.buchen = async (req, res, next) => {
