@@ -4,8 +4,8 @@ const userSchema=new mongoose.Schema({
     name: String,
     phone: String,
     password:String,
-    email:String
-
+    email:String,
+role:{ type : String, default : "user"}
 
 })
 const model=mongoose.model("userPraxis",userSchema)

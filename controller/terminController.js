@@ -3,7 +3,7 @@ const moment = require('moment');
 const behandlung = require('../models/behandlungenModel');
 const user = require('../models/userModel');
 const termin = require('../models/terminModel');
-
+const jwt = require("jsonwebtoken");
 
 exports.getBehandlungen = (req, res, next) => {
     behandlung.find().then((ergebnis) => {
@@ -22,14 +22,9 @@ exports.terminRemove = async (req, res, next) => {
 }
 //getTerminList
 exports.getTerminList = async (req, res, next) => {
-    const phone = req.params.phone;
-	const findUser = await user.findOne({ phone: phone })
+    console.log(req.user)
+	const terminList = await termin.find({ userId: req.user.userId })
 
-	if (!findUser) {
-		return res.status(400).send("für diese telefonNummer gibt es keinen Termin!")
-	}
-
-	const terminList = await termin.find({ userId: findUser._id }).populate("userId")
 	res.send(terminList)
 }
 //getTerminBestätigung
@@ -41,7 +36,7 @@ exports.getTerminBestätigung = (req, res, next) => {
     res.send(200)
 
 }
-//buchen
+//buchen noch nicht eingeloggt
 exports.buchen = async (req, res, next) => {
     const phone = req.params.phone;
     const code = req.params.code;
@@ -60,11 +55,27 @@ exports.buchen = async (req, res, next) => {
 
             userId: userfind._id
         })
-        res.send(createTermin)
-
+        let token = jwt.sign({
+            email: userfind.email,
+             userId: userfind._id,
+        }, process.env.JWT || 'secret', { expiresIn: '2h' })
+        res.status(200).json({
+            message: 'You are log it',
+            token: token,
+            name:userfind.name
+        })
     }
     else
         res.send(401)
+}
+//buchen user eingelogt
+exports.bucheneingelogt = async (req, res, next) => {
+        const createTermin = await termin.create({
+            time: req.body.time,
+            date: req.body.date,
+            userId: req.user.userId
+        })
+        res.send(createTermin)
 }
 //getTermin
 exports.getTermin = async (req, res, next) => {
@@ -80,8 +91,9 @@ exports.getTermin = async (req, res, next) => {
     terminsData.forEach(item => {
         const foundeddate = avalableTime.find(dateItem => dateItem.date === item.date)
         if (foundeddate) {
-            const foundedHourIndex = foundeddate.hours.findIndex(hour => hour === item.time)
-
+            
+            const foundedHourIndex = foundeddate.hours.findIndex(hour => hour == item.time)
+            console.log("foundedHourIndex=",foundedHourIndex)
             foundeddate.hours.splice(foundedHourIndex, 1)
         }
     })

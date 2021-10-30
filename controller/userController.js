@@ -43,7 +43,8 @@ exports.userLogin = async (req, res, next) => {
 				message: 'You are log it',
 				token: token,
 				email: useremail.email,
-				name:useremail.name
+				name:useremail.name,
+				role : useremail.role
 
 
 			})
