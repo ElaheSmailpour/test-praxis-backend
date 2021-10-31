@@ -9,6 +9,7 @@ const verbindeDB = require("./mongo-db");
 const terminRouter = require('./routes/TerminRouter');
 const imagesRouter = require('./routes/ImagesRouter');
 const userLoginRouter=require("./routes/userLoginRouters")
+const adminRouter = require('./routes/adminRouter');
 verbindeDB()
 
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use(cors)
 
 app.use(express.static('public'))
 app.use("/register",userLoginRouter)
+app.use("/admin", adminRouter)
 app.use("/termin", terminRouter)
 app.use("/imagesHome", imagesRouter)
 app.get('*', (req, res, next) => {
