@@ -1,4 +1,4 @@
-const { string } = require("joi")
+
 const mongoose=require("mongoose")
 
 const terminSchema=new mongoose.Schema({
@@ -8,7 +8,6 @@ const terminSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"userPraxis"
     },
-   
     behandlungen:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"behandlungen"

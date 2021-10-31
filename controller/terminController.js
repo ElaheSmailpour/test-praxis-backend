@@ -23,9 +23,9 @@ exports.terminRemove = async (req, res, next) => {
 //getTerminList
 exports.getTerminList = async (req, res, next) => {
     console.log(req.user)
-	const terminList = await termin.find({ userId: req.user.userId })
-
-	res.send(terminList)
+    const terminList = await termin.find({ userId: req.user.userId }).populate("behandlungen")
+    console.log("terminList=", terminList)
+    res.send(terminList)
 }
 //getTerminBestätigung
 exports.getTerminBestätigung = (req, res, next) => {
@@ -52,17 +52,17 @@ exports.buchen = async (req, res, next) => {
         const createTermin = await termin.create({
             time: req.body.time,
             date: req.body.date,
-
+            behandlungen: req.body.behandlungen,
             userId: userfind._id
         })
         let token = jwt.sign({
             email: userfind.email,
-             userId: userfind._id,
+            userId: userfind._id,
         }, process.env.JWT || 'secret', { expiresIn: '2h' })
         res.status(200).json({
             message: 'You are log it',
             token: token,
-            name:userfind.name
+            name: userfind.name
         })
     }
     else
@@ -70,12 +70,14 @@ exports.buchen = async (req, res, next) => {
 }
 //buchen user eingelogt
 exports.bucheneingelogt = async (req, res, next) => {
-        const createTermin = await termin.create({
-            time: req.body.time,
-            date: req.body.date,
-            userId: req.user.userId
-        })
-        res.send(createTermin)
+    console.log("body1=",req.body)
+    const createTermin = await termin.create({
+        time: req.body.time,
+        date: req.body.date,
+        userId: req.user.userId,
+        behandlungen: req.body.behandlungen
+    })
+    res.send(createTermin)
 }
 //getTermin
 exports.getTermin = async (req, res, next) => {
@@ -91,9 +93,9 @@ exports.getTermin = async (req, res, next) => {
     terminsData.forEach(item => {
         const foundeddate = avalableTime.find(dateItem => dateItem.date === item.date)
         if (foundeddate) {
-            
+
             const foundedHourIndex = foundeddate.hours.findIndex(hour => hour == item.time)
-            console.log("foundedHourIndex=",foundedHourIndex)
+            console.log("foundedHourIndex=", foundedHourIndex)
             foundeddate.hours.splice(foundedHourIndex, 1)
         }
     })
