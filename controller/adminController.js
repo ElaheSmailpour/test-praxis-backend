@@ -7,7 +7,7 @@ exports.getTermin = async (req, res, next) => {
     const avalableTime = []
     const page=req.query.page || 1;
 	console.log("pageAdmin=",req.query)
-    for (let i = 0; i < 5; i++) {
+    for (let i = (5 * page)-5; i < 5 * page; i++) {
 
         const date = {
             date: moment().add("days", i).format("YYYY-MM-DD"),
