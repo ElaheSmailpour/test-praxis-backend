@@ -82,7 +82,10 @@ exports.bucheneingelogt = async (req, res, next) => {
 //getTermin
 exports.getTermin = async (req, res, next) => {
     const avalableTime = []
-    for (let i = 0; i < 5; i++) {
+    const page=req.query.page || 1;
+	console.log("page=",req.query)
+	for (let i = (10 * page) - 10; i < 10 * page; i++) {
+
         const date = {
             date: moment().add("days", i).format("YYYY-MM-DD"),
             hours: [10, 11, 12, 13, 14, 15, 16]
