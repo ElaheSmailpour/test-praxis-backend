@@ -5,6 +5,8 @@ const moment = require('moment');
 
 exports.getTermin = async (req, res, next) => {
     const avalableTime = []
+    const page=req.query.page || 1;
+	console.log("pageAdmin=",req.query)
     for (let i = 0; i < 5; i++) {
 
         const date = {
